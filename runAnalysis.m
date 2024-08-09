@@ -1,4 +1,6 @@
 %% Init
+addpath("scripts\")
+addpath("scripts\clusterXYPoints\")
 clear
 close all
 format long % avoids truncations for lat lon values
@@ -31,6 +33,196 @@ lon_max = 11.725951930654585;
 % lon_max = 10.93559379233116;
 
 %% Filter & load
+
+%2023
+accidentData = readtable("accidentData\csv\Unfallorte2023_LinRef.csv");
+
+for accidentCnt = 1:size(accidentData.XGCSWGS84,1)
+    [lat,lon] = wgs2double(accidentData.YGCSWGS84(accidentCnt),accidentData.XGCSWGS84(accidentCnt));
+    % all accidents in the specified area
+    if (lat > lat_min && lat <lat_max) && (lon > lon_min && lon < lon_max)
+        AllAccidentsCnt = AllAccidentsCnt+1;
+        accidentAll.lat(AllAccidentsCnt) = lat;
+        accidentAll.lon(AllAccidentsCnt) = lon;
+        accidentAll.uart(AllAccidentsCnt) = accidentData.UART(accidentCnt);
+%         accidentAll.ULICHTVERH(AllAccidentsCnt) = accidentData.ULICHTVERH(accidentCnt);
+
+        if accidentData.IstRad(accidentCnt)
+            BikeAccidentsCnt = BikeAccidentsCnt+1;
+            accidentBikeAll.lat(BikeAccidentsCnt) = lat;
+            accidentBikeAll.lon(BikeAccidentsCnt) = lon;
+            accidentBikeAll.uart(BikeAccidentsCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeAll.ULICHTVERH(BikeAccidentsCnt) = accidentData.ULICHTVERH(accidentCnt);
+            
+            % Month of accident
+            accidentBikeAll.month(accidentData.UMONAT(accidentCnt)) = accidentBikeAll.month(accidentData.UMONAT(accidentCnt)) +1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 1
+            BikeAccidentsFatalCnt = BikeAccidentsFatalCnt+1;
+            accidentBikeFatal.lat(BikeAccidentsFatalCnt) = lat;
+            accidentBikeFatal.lon(BikeAccidentsFatalCnt) = lon;
+            accidentBikeFatal.uart(BikeAccidentsFatalCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeFatal.ULICHTVERH(BikeAccidentsFatalCnt) = accidentData.ULICHTVERH(accidentCnt);
+        end
+
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 2
+            BikeAccidentsSeriousCnt = BikeAccidentsSeriousCnt+1;
+            accidentBikeSerious.lat(BikeAccidentsSeriousCnt) = lat;
+            accidentBikeSerious.lon(BikeAccidentsSeriousCnt) = lon;
+            accidentBikeSerious.uart(BikeAccidentsSeriousCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeSerious.ULICHTVERH(BikeAccidentsSeriousCnt) = accidentData.ULICHTVERH(accidentCnt);
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 3
+            BikeAccidentsSlightCnt = BikeAccidentsSlightCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstPKW(accidentCnt)
+            BikeCarAccidentsCnt = BikeCarAccidentsCnt+1;
+            accidentLocationBikeCar(BikeCarAccidentsCnt,1) = lat;
+            accidentLocationBikeCar(BikeCarAccidentsCnt,2) = lon;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstGkfz(accidentCnt)
+            BikeGkfzAccidentsCnt = BikeGkfzAccidentsCnt+1;
+            accidentLocationBikeGkfz(BikeGkfzAccidentsCnt,1) = lat;
+            accidentLocationBikeGkfz(BikeGkfzAccidentsCnt,2) = lon;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstFuss(accidentCnt)
+            BikeFussAccidentsCnt = BikeFussAccidentsCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstKrad(accidentCnt)
+            BikeKradAccidentsCnt = BikeKradAccidentsCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstSonstige(accidentCnt)
+            BikeSonstigAccidentsCnt = BikeSonstigAccidentsCnt+1;
+        end
+    end
+end
+
+% 2022
+
+accidentData = readtable("accidentData\csv\Unfallorte2022_LinRef.csv");
+
+for accidentCnt = 1:size(accidentData.XGCSWGS84,1)
+    [lat,lon] = wgs2double(accidentData.YGCSWGS84(accidentCnt),accidentData.XGCSWGS84(accidentCnt));
+    % all accidents in the specified area
+    if (lat > lat_min && lat <lat_max) && (lon > lon_min && lon < lon_max)
+        AllAccidentsCnt = AllAccidentsCnt+1;
+        accidentAll.lat(AllAccidentsCnt) = lat;
+        accidentAll.lon(AllAccidentsCnt) = lon;
+        accidentAll.uart(AllAccidentsCnt) = accidentData.UART(accidentCnt);
+%         accidentAll.ULICHTVERH(AllAccidentsCnt) = accidentData.ULICHTVERH(accidentCnt);
+
+        if accidentData.IstRad(accidentCnt)
+            BikeAccidentsCnt = BikeAccidentsCnt+1;
+            accidentBikeAll.lat(BikeAccidentsCnt) = lat;
+            accidentBikeAll.lon(BikeAccidentsCnt) = lon;
+            accidentBikeAll.uart(BikeAccidentsCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeAll.ULICHTVERH(BikeAccidentsCnt) = accidentData.ULICHTVERH(accidentCnt);
+            
+            % Month of accident
+            accidentBikeAll.month(accidentData.UMONAT(accidentCnt)) = accidentBikeAll.month(accidentData.UMONAT(accidentCnt)) +1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 1
+            BikeAccidentsFatalCnt = BikeAccidentsFatalCnt+1;
+            accidentBikeFatal.lat(BikeAccidentsFatalCnt) = lat;
+            accidentBikeFatal.lon(BikeAccidentsFatalCnt) = lon;
+            accidentBikeFatal.uart(BikeAccidentsFatalCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeFatal.ULICHTVERH(BikeAccidentsFatalCnt) = accidentData.ULICHTVERH(accidentCnt);
+        end
+
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 2
+            BikeAccidentsSeriousCnt = BikeAccidentsSeriousCnt+1;
+            accidentBikeSerious.lat(BikeAccidentsSeriousCnt) = lat;
+            accidentBikeSerious.lon(BikeAccidentsSeriousCnt) = lon;
+            accidentBikeSerious.uart(BikeAccidentsSeriousCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeSerious.ULICHTVERH(BikeAccidentsSeriousCnt) = accidentData.ULICHTVERH(accidentCnt);
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 3
+            BikeAccidentsSlightCnt = BikeAccidentsSlightCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstPKW(accidentCnt)
+            BikeCarAccidentsCnt = BikeCarAccidentsCnt+1;
+            accidentLocationBikeCar(BikeCarAccidentsCnt,1) = lat;
+            accidentLocationBikeCar(BikeCarAccidentsCnt,2) = lon;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstGkfz(accidentCnt)
+            BikeGkfzAccidentsCnt = BikeGkfzAccidentsCnt+1;
+            accidentLocationBikeGkfz(BikeGkfzAccidentsCnt,1) = lat;
+            accidentLocationBikeGkfz(BikeGkfzAccidentsCnt,2) = lon;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstFuss(accidentCnt)
+            BikeFussAccidentsCnt = BikeFussAccidentsCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstKrad(accidentCnt)
+            BikeKradAccidentsCnt = BikeKradAccidentsCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstSonstige(accidentCnt)
+            BikeSonstigAccidentsCnt = BikeSonstigAccidentsCnt+1;
+        end
+    end
+end
+
+%2021
+accidentData = readtable("accidentData\csv\Unfallorte2021_LinRef.csv");
+
+for accidentCnt = 1:size(accidentData.XGCSWGS84,1)
+    [lat,lon] = wgs2double(accidentData.YGCSWGS84(accidentCnt),accidentData.XGCSWGS84(accidentCnt));
+    % all accidents in the specified area
+    if (lat > lat_min && lat <lat_max) && (lon > lon_min && lon < lon_max)
+        AllAccidentsCnt = AllAccidentsCnt+1;
+        accidentAll.lat(AllAccidentsCnt) = lat;
+        accidentAll.lon(AllAccidentsCnt) = lon;
+        accidentAll.uart(AllAccidentsCnt) = accidentData.UART(accidentCnt);
+%         accidentAll.ULICHTVERH(AllAccidentsCnt) = accidentData.ULICHTVERH(accidentCnt);
+
+        if accidentData.IstRad(accidentCnt)
+            BikeAccidentsCnt = BikeAccidentsCnt+1;
+            accidentBikeAll.lat(BikeAccidentsCnt) = lat;
+            accidentBikeAll.lon(BikeAccidentsCnt) = lon;
+            accidentBikeAll.uart(BikeAccidentsCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeAll.ULICHTVERH(BikeAccidentsCnt) = accidentData.ULICHTVERH(accidentCnt);
+            
+            % Month of accident
+            accidentBikeAll.month(accidentData.UMONAT(accidentCnt)) = accidentBikeAll.month(accidentData.UMONAT(accidentCnt)) +1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 1
+            BikeAccidentsFatalCnt = BikeAccidentsFatalCnt+1;
+            accidentBikeFatal.lat(BikeAccidentsFatalCnt) = lat;
+            accidentBikeFatal.lon(BikeAccidentsFatalCnt) = lon;
+            accidentBikeFatal.uart(BikeAccidentsFatalCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeFatal.ULICHTVERH(BikeAccidentsFatalCnt) = accidentData.ULICHTVERH(accidentCnt);
+        end
+
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 2
+            BikeAccidentsSeriousCnt = BikeAccidentsSeriousCnt+1;
+            accidentBikeSerious.lat(BikeAccidentsSeriousCnt) = lat;
+            accidentBikeSerious.lon(BikeAccidentsSeriousCnt) = lon;
+            accidentBikeSerious.uart(BikeAccidentsSeriousCnt) = accidentData.UART(accidentCnt);
+%             accidentBikeSerious.ULICHTVERH(BikeAccidentsSeriousCnt) = accidentData.ULICHTVERH(accidentCnt);
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.UKATEGORIE(accidentCnt) == 3
+            BikeAccidentsSlightCnt = BikeAccidentsSlightCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstPKW(accidentCnt)
+            BikeCarAccidentsCnt = BikeCarAccidentsCnt+1;
+            accidentLocationBikeCar(BikeCarAccidentsCnt,1) = lat;
+            accidentLocationBikeCar(BikeCarAccidentsCnt,2) = lon;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstGkfz(accidentCnt)
+            BikeGkfzAccidentsCnt = BikeGkfzAccidentsCnt+1;
+            accidentLocationBikeGkfz(BikeGkfzAccidentsCnt,1) = lat;
+            accidentLocationBikeGkfz(BikeGkfzAccidentsCnt,2) = lon;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstFuss(accidentCnt)
+            BikeFussAccidentsCnt = BikeFussAccidentsCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstKrad(accidentCnt)
+            BikeKradAccidentsCnt = BikeKradAccidentsCnt+1;
+        end
+        if accidentData.IstRad(accidentCnt) && accidentData.IstSonstige(accidentCnt)
+            BikeSonstigAccidentsCnt = BikeSonstigAccidentsCnt+1;
+        end
+    end
+end
 
 % load dataset 1
 accidentData = readtable("accidentData\csv\Unfallorte2020_LinRef.csv");
@@ -405,7 +597,7 @@ maxdist = 0.06; %[km] max distance between points for the clustering
 
 maxdist = maxdist/110.574;      % Latitude: 1 deg = 110.574 km
                                 % Longitude: 1 deg = 111.320*cos(latitude) km
-minClusterSize = 21;
+minClusterSize = 36;
 method = 'geometric median';
 [clustersCentroids,clustersGeoMedians,clustersXY] = clusterXYpoints(XY,maxdist,minClusterSize,method,'merge');
 
@@ -424,6 +616,12 @@ end
 for iter = 1:clusterCnt
     figure
     geobubble(clustersXY{iter}(:,2)',clustersXY{iter}(:,1)')
+    geobasemap topographic
+    set(gca, 'FontName', 'Serif','FontSize',14)
+    % geolimits([lat_min lat_max],[lon_min lon_max])
+    % f.Position = [100 100 560 400];
+    saveas(gcf,"Results/BikeAccidentClusters"+num2str(iter)+".png")
+    pause(1)
 end
 
 figure;
